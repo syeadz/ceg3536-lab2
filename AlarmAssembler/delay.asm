@@ -17,7 +17,12 @@
 ; Description: Delays for num ms. 
 ;--------------------------------
 delayms: 
-   jsr setDelay
+   jsr setDelay ; set the number of ms to delay
+
+delayms_loop:
+   jsr polldelay ; delay for 1 ms
+   cmpa #TRUE ; compare A to TRUE
+   bne delayms_loop ; if A is not TRUE, branch back to delayms_loop
 
    rts
 
