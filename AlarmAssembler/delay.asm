@@ -66,24 +66,24 @@ polldelay: pshb
 
    ldy #delayCount ; load delayCount into Y
 
-delay_loop:
+polldelay_loop:
    nop ; each nop is one cycle
    nop
    nop
    nop
    dey            ; 1 cycle, decrement Y, aka delayCount
-   bne delay_loop ; this takes 3 cycles, 8 cycles total
+   bne polldelay_loop ; this takes 3 cycles, 8 cycles total
                   ; if it is not 0, branch back to delay_loop
    ldx delayCount ; load delayCount into X
    dex            ; decrement X
-   beq delay_done ; if X is 0, branch to delay_done
+   beq polldelay_done ; if X is 0, branch to delay_done
    lda #FALSE     ; load FALSE into A, meaning counter is not 0
-   bra return
+   bra polldelay_return
 
-delay_done:
+polldelay_done:
    lda #TRUE     ; load TRUE into A, meaning counter is 0
 
-delay_return:
+polldelay_return:
    stx delayCount ; store X into delayCount
 
    ; restore registers and stack
