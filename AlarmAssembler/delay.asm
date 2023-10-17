@@ -17,6 +17,7 @@
 ; Description: Delays for num ms. 
 ;--------------------------------
 delayms: 
+   jsr setDelay
 
    rts
 
@@ -64,21 +65,21 @@ polldelay: pshb
    pshx
    pshy
 
-   ldy #delayCount ; load delayCount into Y
+   ldy #3000 ; load 3000 into Y
 
 polldelay_loop:
    nop ; each nop is one cycle
    nop
    nop
    nop
-   dey            ; 1 cycle, decrement Y, aka delayCount
+   dey            ; 1 cycle, decrement Y, aka the 3000 loop
    bne polldelay_loop ; this takes 3 cycles, 8 cycles total
                   ; if it is not 0, branch back to delay_loop
    ldx delayCount ; load delayCount into X
-   dex            ; decrement X
+   dex            ; decrement X (delayCount)
    beq polldelay_done ; if X is 0, branch to delay_done
-   lda #FALSE     ; load FALSE into A, meaning counter is not 0
-   bra polldelay_return
+   lda #FALSE     ; load FALSE into A, meaning delayCount is not 0
+   bra polldelay_return ; move to end of subroutine
 
 polldelay_done:
    lda #TRUE     ; load TRUE into A, meaning counter is 0
