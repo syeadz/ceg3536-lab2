@@ -17,7 +17,7 @@
 ; Description: Delays for num ms. 
 ;--------------------------------
 delayms: 
-      ; Complete this routine, it shall be called from the Keypad Module
+
    rts
 
 ;------------------------------------------------------
@@ -29,9 +29,7 @@ delayms:
 ;              variable.
 ;------------------------------------------------------
 setDelay: 
-
-   ; Use the subroutine developed in lab 1
-
+   std delayCount ; store D into delayCount
    rts
 
 
@@ -66,10 +64,27 @@ polldelay: pshb
    pshx
    pshy
 
+   ldy #delayCount ; load delayCount into Y
 
-	; Use the subroutine developed in lab 1
+delay_loop:
+   nop ; each nop is one cycle
+   nop
+   nop
+   nop
+   dey            ; 1 cycle, decrement Y, aka delayCount
+   bne delay_loop ; this takes 3 cycles, 8 cycles total
+                  ; if it is not 0, branch back to delay_loop
+   ldx delayCount ; load delayCount into X
+   dex            ; decrement X
+   beq delay_done ; if X is 0, branch to delay_done
+   lda #FALSE     ; load FALSE into A, meaning counter is not 0
+   bra return
 
+delay_done:
+   lda #TRUE     ; load TRUE into A, meaning counter is 0
 
+delay_return:
+   stx delayCount ; store X into delayCount
 
    ; restore registers and stack
    puly
