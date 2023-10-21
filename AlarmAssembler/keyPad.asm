@@ -159,6 +159,8 @@ readKey:
 	cmpa #KEYPOUND ; check if key #
 	beq ascii_keypound ; if yes, goto key#
 	cmpa #KEYD ; check if key D
+	ldaa #NOKEY
+	bra done
 
 ascii_key1:
 	ldab #'1' ; ASCII code for 1
@@ -208,4 +210,5 @@ ascii_keypound:
 ascii_keyd:
 	ldab #'d' ; ASCII code for d
 
+done:
     rts		           ;  return(ch); 
