@@ -4,36 +4,42 @@
 #define NOKEY 0x00   // no key pressed
 #define POLLCOUNT 1  // number of loops to create 1 ms poll time
 
+#define keyA 0b
+
 char porta, ddra, pucr;
 
 void delayms(int ms);
 
 // ; Description:
 // ;  Loops for a period of 2ms, checking to see if
-// ;  key is pressed. Calls readKey to read key if keypress 
+// ;  key is pressed. Calls readKey to read key if keypress
 // ;  detected (and debounced) on Port A and get ASCII code for
 // ;  key pressed.
-char pollReadKey() {
+char pollReadKey()
+{
+    char ch = NOKEY;
 
-    porta = 0X0F;
+    porta = 0X0F; // set porta to nothing
 
-    int count = POLLCOUNT;
-    while(count != 0){
-        delayms(1);
-        if (porta != 0x0F)
+    int count = POLLCOUNT; // loop for pollcount times
+    while (count != 0)
+    {
+        if (porta != 0x0F) // change detected
         {
-            return readKey();
+            delayms(1);         // see if anything changes after 1 ms
+            if (porta != 0x0F)  // make sure it hasn't changed
+                ch = readKey(); // return the key that is currently pressed
         }
         count--;
     }
-
+    return ch;
 }
 
-// initialize port A for keypad
+// Initialize port A for keypad
 void initKey()
 {
-    ddra = 0x00; // set port A to input
-    pucr = 0x01; // disable pullups
+    porta = 0x0F; // set porta to nothing
+    ddra = 0xF0;  // set port A top 4 bits to output
 }
 
 // ; Description:
@@ -43,71 +49,42 @@ void initKey()
 // ;  translate to get the corresponding ASCII code.
 char readKey()
 {
-    if (porta == 0x11)
+    delayms(10); // to debounce keypress
+    switch (porta)
     {
-        return 0x01; // 1
-    }
-    else if (porta == 0x12)
-    {
-        return 0x02; // 2
-    }
-    else if (porta == 0x14)
-    {
-        return 0x03; // 3
-    }
-    else if (porta == 0x18)
-    {
-        return 0x41; // A
-    }
-    else if (porta == 0x21)
-    {
-        return 0x04; // 4
-    }
-    else if (porta == 0x22)
-    {
-        return 0x05; // 5
-    }
-    else if (porta == 0x24)
-    {
-        return 0x06; // 6
-    }
-    else if (porta == 0x28)
-    {
-        return 0x42; // B
-    }
-    else if (porta == 0x41)
-    {
-        return 0x07; // 7
-    }
-    else if (porta == 0x42)
-    {
-        return 0x08; // 8
-    }
-    else if (porta == 0x44)
-    {
-        return 0x09; // 9
-    }
-    else if (porta == 0x48)
-    {
-        return 0x43; // C
-    }
-    else if (porta == 0x81)
-    {
-        return 0x2A; // *
-    }
-    else if (porta == 0x82)
-    {
-        return 0x00; // 0
-    }
-    else if (porta == 0x84)
-    {
-        return 0x23; // #
-    }
-    else if (porta == 0x88)
-    {
-        return 0x44; // D
-    } else
-    {
+    case 0b00011110: // 1
+        return '1';
+    case 0b00011101: // 2
+        return '2';
+    case 0b00011011: // 3
+        return '3';
+    case 0b00010111: // a
+        return 'a';
+    case 0b00101110: // 4
+        return '4';
+    case 0b00101101: // 5
+        return '5';
+    case 0b00101011: // 6
+        return '6';
+    case 0b00100111: // b
+        return 'b';
+    case 0b01001110: // 7
+        return '7';
+    case 0b01001101: // 8
+        return '8';
+    case 0b01001011: // 9
+        return '9';
+    case 0b01000111: // c
+        return 'c';
+    case 0b10001110: // *
+        return '*';
+    case 0b10001101: // 0
+        return '0';
+    case 0b10001011: // #
+        return '#';
+    case 0b10000111: // d
+        return 'd';
+    default:
         return NOKEY;
     }
 }
