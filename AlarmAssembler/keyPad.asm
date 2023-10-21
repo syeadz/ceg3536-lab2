@@ -64,7 +64,7 @@ KEYD 		EQU	%01110111
 ; 	Initiliases PORT A
 ;-----------------------------------------------------------	
 initKeyPad:
-	movb #$0f, porta
+	movb #$00, porta
 	movb #$f0, ddra
 	rts
 
