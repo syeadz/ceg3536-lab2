@@ -19,15 +19,15 @@ char pollReadKey()
 {
     char ch = NOKEY;
 
-    porta = 0X0F; // set porta to nothing
+    porta = 0X00; // set porta to nothing
 
     int count = POLLCOUNT; // loop for pollcount times
     while (count != 0)
     {
-        if (porta != 0x0F) // change detected
+        if (porta != 0x00) // change detected
         {
             delayms(1);         // see if anything changes after 1 ms
-            if (porta != 0x0F)  // make sure it hasn't changed
+            if (porta != 0x00)  // make sure it hasn't changed
                 ch = readKey(); // return the key that is currently pressed
         }
         count--;
@@ -38,8 +38,8 @@ char pollReadKey()
 // Initialize port A for keypad
 void initKey()
 {
-    porta = 0x0F; // set porta to nothing
-    ddra = 0xF0;  // set port A top 4 bits to output
+    porta = 0x00; // set porta to nothing
+    ddra = 0xF0;
 }
 
 // ; Description:
@@ -52,37 +52,37 @@ char readKey()
     delayms(10); // to debounce keypress
     switch (porta)
     {
-    case 0b00011110: // 1
+    case 0b11101110: // 1
         return '1';
-    case 0b00011101: // 2
+    case 0b11101101: // 2
         return '2';
-    case 0b00011011: // 3
+    case 0b11101011: // 3
         return '3';
-    case 0b00010111: // a
+    case 0b11100111: // a
         return 'a';
-    case 0b00101110: // 4
+    case 0b11011110: // 4
         return '4';
-    case 0b00101101: // 5
+    case 0b11011101: // 5
         return '5';
-    case 0b00101011: // 6
+    case 0b11011011: // 6
         return '6';
-    case 0b00100111: // b
+    case 0b11010111: // b
         return 'b';
-    case 0b01001110: // 7
+    case 0b10111110: // 7
         return '7';
-    case 0b01001101: // 8
+    case 0b10111101: // 8
         return '8';
-    case 0b01001011: // 9
+    case 0b10111011: // 9
         return '9';
-    case 0b01000111: // c
+    case 0b10110111: // c
         return 'c';
-    case 0b10001110: // *
+    case 0b01111110: // *
         return '*';
-    case 0b10001101: // 0
+    case 0b01111101: // 0
         return '0';
-    case 0b10001011: // #
+    case 0b01111011: // #
         return '#';
-    case 0b10000111: // d
+    case 0b01110111: // d
         return 'd';
     default:
         return NOKEY;
